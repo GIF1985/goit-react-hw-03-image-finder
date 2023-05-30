@@ -13,12 +13,14 @@ const App = ({ API_KEY }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(1);
+  const [totalHits, setTotalHits] = useState(0);
 
   const handleSearch = query => {
     setSearchQuery(query);
     setPage(1);
     setImages([]);
     setError(null);
+    setTotalHits(0);
   };
 
   useEffect(() => {
@@ -38,7 +40,14 @@ const App = ({ API_KEY }) => {
         return response.json();
       })
       .then(data => {
-        setImages(prevImages => [...prevImages, ...data.hits]);
+        setTotalHits(data.totalHits || 0);
+
+        if (totalHits <= 12) {
+          setImages(data.hits);
+          setPage(1);
+        } else {
+          setImages(prevImages => [...prevImages, ...data.hits]);
+        }
       })
       .catch(error => {
         setError(error.message);
@@ -48,7 +57,7 @@ const App = ({ API_KEY }) => {
           setIsLoading(false);
         }, 500);
       });
-  }, [searchQuery, page, API_KEY]);
+  }, [searchQuery, page, API_KEY, totalHits]);
 
   const handleImageClick = id => {
     const selectedImage = images.find(image => image.id === id);
@@ -84,7 +93,8 @@ const App = ({ API_KEY }) => {
         </ImageGallery>
       )}
       {!isLoading && images.length === 0 && <p>Please enter a search query</p>}
-      {!isLoading && images.length > 0 && (
+      {}
+      {totalHits > 12 && !isLoading && images.length > 0 && (
         <Button label="Load more" onClick={handleLoadMore} />
       )}
     </div>
