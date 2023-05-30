@@ -8,10 +8,3 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <App API_KEY="36222156-a0a786a0445a35f0e3f8fc28d" />
   </React.StrictMode>
 );
-
-// ReactDOM.render(
-//   <React.StrictMode>
-//     <App API_KEY="36222156-a0a786a0445a35f0e3f8fc28d" />
-//   </React.StrictMode>,
-//   document.getElementById('root')
-// );
