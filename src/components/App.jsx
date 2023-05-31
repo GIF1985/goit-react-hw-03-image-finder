@@ -42,9 +42,12 @@ const App = ({ API_KEY }) => {
       .then(data => {
         setTotalHits(data.totalHits || 0);
 
-        if (totalHits <= (page - 1) * 12 + data.hits.length) {
-          setImages(prevImages => [...prevImages, ...data.hits]);
-          setPage(1);
+        if (data.hits.length === 0) {
+          setError('No images found');
+        }
+
+        if (page === 1) {
+          setImages(data.hits);
         } else {
           setImages(prevImages => [...prevImages, ...data.hits]);
         }
@@ -57,7 +60,7 @@ const App = ({ API_KEY }) => {
           setIsLoading(false);
         }, 500);
       });
-  }, [searchQuery, page, API_KEY, totalHits]);
+  }, [searchQuery, page, API_KEY]);
 
   const handleImageClick = id => {
     const selectedImage = images.find(image => image.id === id);
@@ -93,8 +96,7 @@ const App = ({ API_KEY }) => {
         </ImageGallery>
       )}
       {!isLoading && images.length === 0 && <p>Please enter a search query</p>}
-      {}
-      {totalHits > page * 12 && !isLoading && images.length > 0 && (
+      {totalHits > images.length && !isLoading && images.length > 0 && (
         <Button label="Load more" onClick={handleLoadMore} />
       )}
     </div>
