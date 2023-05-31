@@ -42,8 +42,8 @@ const App = ({ API_KEY }) => {
       .then(data => {
         setTotalHits(data.totalHits || 0);
 
-        if (totalHits <= 12) {
-          setImages(data.hits);
+        if (totalHits <= (page - 1) * 12 + data.hits.length) {
+          setImages(prevImages => [...prevImages, ...data.hits]);
           setPage(1);
         } else {
           setImages(prevImages => [...prevImages, ...data.hits]);
@@ -94,7 +94,7 @@ const App = ({ API_KEY }) => {
       )}
       {!isLoading && images.length === 0 && <p>Please enter a search query</p>}
       {}
-      {totalHits > 12 && !isLoading && images.length > 0 && (
+      {totalHits > page * 12 && !isLoading && images.length > 0 && (
         <Button label="Load more" onClick={handleLoadMore} />
       )}
     </div>
